@@ -6,12 +6,12 @@ const GOOGLE_FORM_URL =
   'https://docs.google.com/forms/d/e/1FAIpQLScMhoZ2sr8U93G-6hEvVDPNaQvam9uEiMdmIRhh-2VUrqZIzw/formResponse';
 
 const ENTRY_IDS = {
-  name: 'entry.354199489',
-  email: 'entry.1799882062',
-  phone: 'entry.676591177',
-  location: 'entry.42402787',
-  leftBehind: 'entry.1326279365',
-  urgency: 'entry.1815240252',
+  name: 'entry.313146997',
+  email: 'entry.1227141958',
+  phone: 'entry.870244970',
+  location: 'entry.1079037524',
+  leftBehind: 'entry.1245958915',
+  urgency: 'entry.617766526',
 };
 
 const leftBehindOptions = [
