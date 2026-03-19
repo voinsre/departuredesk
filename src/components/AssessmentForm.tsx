@@ -180,6 +180,22 @@ export default function AssessmentForm() {
   }
 
   return (
+    <>
+    {/* Hidden iframe and form for Google Forms submission — must be outside the visible form */}
+    <iframe
+      ref={iframeRef}
+      name="hidden_iframe"
+      style={{ display: 'none' }}
+      title="form-submit"
+    />
+    <form
+      ref={hiddenFormRef}
+      action={GOOGLE_FORM_URL}
+      method="POST"
+      target="hidden_iframe"
+      style={{ display: 'none' }}
+    />
+
     <form onSubmit={handleSubmit} className="bg-white rounded-lg p-8 sm:p-10" noValidate>
       <div className="space-y-8">
         {/* Full Name */}
@@ -334,20 +350,7 @@ export default function AssessmentForm() {
         </p>
       </div>
 
-      {/* Hidden iframe and form for Google Forms submission */}
-      <iframe
-        ref={iframeRef}
-        name="hidden_iframe"
-        style={{ display: 'none' }}
-        title="form-submit"
-      />
-      <form
-        ref={hiddenFormRef}
-        action={GOOGLE_FORM_URL}
-        method="POST"
-        target="hidden_iframe"
-        style={{ display: 'none' }}
-      />
     </form>
+    </>
   );
 }
