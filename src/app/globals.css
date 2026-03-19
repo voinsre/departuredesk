@@ -1,0 +1,67 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --navy-900: #0A1628;
+  --navy-800: #12233D;
+  --navy-700: #1A3354;
+  --gold-400: #C9A84C;
+  --gold-300: #D4B95E;
+  --gold-100: #F5ECD5;
+  --slate-100: #F1F3F5;
+  --slate-200: #E2E6EA;
+  --slate-400: #8B95A3;
+  --white: #FFFFFF;
+  --white-alpha-80: rgba(255, 255, 255, 0.8);
+  --white-alpha-50: rgba(255, 255, 255, 0.5);
+  --white-alpha-10: rgba(255, 255, 255, 0.1);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  color: var(--navy-900);
+  background: var(--white);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Animation utilities */
+.animate-fade-up {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.animate-fade-up.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Stagger delays */
+.stagger-1 { transition-delay: 100ms; }
+.stagger-2 { transition-delay: 200ms; }
+.stagger-3 { transition-delay: 300ms; }
+.stagger-4 { transition-delay: 400ms; }
+.stagger-5 { transition-delay: 500ms; }
+
+/* Section label styling */
+.section-label {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 13px;
+}
+
+/* Gold bullet marker */
+.gold-bullet::before {
+  content: '✦';
+  color: var(--gold-400);
+  margin-right: 12px;
+  font-size: 14px;
+}
