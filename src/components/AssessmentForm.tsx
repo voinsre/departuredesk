@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, FormEvent } from 'react';
+import { useState, useRef, FormEvent } from 'react';
 
 const GOOGLE_FORM_URL =
   'https://docs.google.com/forms/d/e/1FAIpQLScMhoZ2sr8U93G-6hEvVDPNaQvam9uEiMdmIRhh-2VUrqZIzw/formResponse';
@@ -48,6 +48,8 @@ interface FormErrors {
 }
 
 export default function AssessmentForm() {
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+  const hiddenFormRef = useRef<HTMLFormElement>(null);
   const [formData, setFormData] = useState<FormData>({
     name: '',
     email: '',
@@ -84,37 +86,63 @@ export default function AssessmentForm() {
     return Object.keys(newErrors).length === 0;
   }
 
-  async function handleSubmit(e: FormEvent) {
+  function handleSubmit(e: FormEvent) {
     e.preventDefault();
     setSubmitError('');
 
     if (!validate()) return;
 
     setLoading(true);
+
     try {
-      const googleFormData = new URLSearchParams();
-      googleFormData.append(ENTRY_IDS.name, formData.name.trim());
-      googleFormData.append(ENTRY_IDS.email, formData.email.trim());
-      googleFormData.append(ENTRY_IDS.phone, formData.phone.trim());
-      googleFormData.append(ENTRY_IDS.location, formData.location.trim());
-      formData.leftBehind.forEach((item) => {
-        googleFormData.append(ENTRY_IDS.leftBehind, item);
-      });
-      if (formData.urgency) {
-        googleFormData.append(ENTRY_IDS.urgency, formData.urgency);
+      const form = hiddenFormRef.current;
+      if (!form) return;
+
+      // Clear previous hidden inputs
+      form.innerHTML = '';
+
+      // Build hidden form fields
+      const fields: Record<string, string | string[]> = {
+        [ENTRY_IDS.name]: formData.name.trim(),
+        [ENTRY_IDS.email]: formData.email.trim(),
+        [ENTRY_IDS.phone]: formData.phone.trim(),
+        [ENTRY_IDS.location]: formData.location.trim(),
+      };
+
+      for (const [name, value] of Object.entries(fields)) {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = name;
+        input.value = value as string;
+        form.appendChild(input);
       }
 
-      await fetch(GOOGLE_FORM_URL, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: googleFormData.toString(),
+      // Checkbox values (multiple inputs with same name)
+      formData.leftBehind.forEach((item) => {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = ENTRY_IDS.leftBehind;
+        input.value = item;
+        form.appendChild(input);
       });
 
-      setSubmitted(true);
+      if (formData.urgency) {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = ENTRY_IDS.urgency;
+        input.value = formData.urgency;
+        form.appendChild(input);
+      }
+
+      form.submit();
+
+      // Show success after a short delay to allow submission
+      setTimeout(() => {
+        setSubmitted(true);
+        setLoading(false);
+      }, 1500);
     } catch {
       setSubmitError('Something went wrong. Please try again or email us directly at info@departure-desk.com.');
-    } finally {
       setLoading(false);
     }
   }
@@ -305,6 +333,21 @@ export default function AssessmentForm() {
           We&apos;ll respond within 24 hours. No commitment.
         </p>
       </div>
+
+      {/* Hidden iframe and form for Google Forms submission */}
+      <iframe
+        ref={iframeRef}
+        name="hidden_iframe"
+        style={{ display: 'none' }}
+        title="form-submit"
+      />
+      <form
+        ref={hiddenFormRef}
+        action={GOOGLE_FORM_URL}
+        method="POST"
+        target="hidden_iframe"
+        style={{ display: 'none' }}
+      />
     </form>
   );
 }
